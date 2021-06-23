@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt')
 const helpers = {};
+const pool = require("../models/connection");
 const jtw = require("jsonwebtoken");
 
 helpers.encryptPassword = async (password)=>{
@@ -22,18 +23,37 @@ helpers.loginPassword = async (password, passwordGuardada)=>{
 };
 
 helpers.verifyJWT =  (req, res, next) =>{
-    const token = req.headers["x-access-token"];
+    const token = req.headers["authorization"];
     if(!token){
         res.send("Necesitas token");
     } else{
         jtw.verify(token, "secretJWT",(err, decode)=>{
             if(err){
-                res.json({auth:false, mensaje:"Te falta Auntenticvarte"});
+                res.json({auth:false, mensaje:"Te falta Auntenticarte"});
             } else {
-                req.token = decode.id;
+                console.log(decode)
+                req.token = decode.email;
                 next();
             }
         })
     }
 }
+
+helpers.esAdmin = async (req, res, next) =>{
+    console.log(req.token+"Este es el id")
+   try {
+    const user = await pool.query(`SELECT * FROM usuarios where email = "${req.token}" `);
+    console.log(user);
+    if(user[0].rol !="admin") throw false;
+    console.log("es admin");
+    next()
+   } catch (error) {
+       res.json({status:400, mensaje:"No tienes permiso para realizar esta accion"})
+       return;
+   }
+
+
+}
+
+
 module.exports = helpers;

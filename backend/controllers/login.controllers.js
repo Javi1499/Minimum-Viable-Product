@@ -6,7 +6,7 @@ const controladorCitas = {
     iniciarSesion: async (req, res) => {
         console.log(req.body);
         const { email, password } = req.body;
-        const respuesta = await pool.query(`SELECT * FROM usuarios WHERE email = ?`, [email])
+        const respuesta = await pool.query(`SELECT id_usuario, email, rol, usuario, password FROM usuarios WHERE email = ?`, [email]);
         if (respuesta.length > 0) {
             const usuario = respuesta[0];
             const validarPassword = await helpers.loginPassword(password, usuario.password);
@@ -16,14 +16,12 @@ const controladorCitas = {
                     email:respuesta[0].email,
                     usuario:respuesta[0].usuario
                 }
-                const token = jtw.sign(user, "secretJWT", {
-                    expiresIn: 300,
-                }
+                const token = jtw.sign(user, "secretJWT"
                 );
-                res.json({ status: 200, mensaje: "Bienvenido", auth: true, token, data: respuesta })
+                res.json({ status: 200, mensaje: "Bienvenido", auth: true, token, data: {id_usuario:respuesta[0].id_usuario, rol:respuesta[0].rol} })
                 return
             }
-            res.json({ status: 400, mensaje: "Contrasenia incorrecta", auth: false });
+            res.json({ status: 400, mensaje: "Contraseñia incorrecta", auth: false });
             return;
         }
         res.json({ status: 400, mensaje: "Usuario no existe", auth: false });

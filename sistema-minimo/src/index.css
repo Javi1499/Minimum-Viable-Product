@@ -57,8 +57,30 @@ html {
     background: white;
     border-bottom: 1px solid #e1e1e1;
     color: black;
+    margin-bottom: 10px;
   }
-  
+  .cita.admin{
+    background: white;
+    border-bottom: 1px solid #e1e1e1;
+    color: black;
+    width: 50;
+  }
+  .password {
+    color: white;
+  }
+
+  .listas {
+    width: 500px;
+    margin-left: 6cm;
+  }
+
+  .login {
+    width: 600px;
+    
+  }
+  .row {
+    width: 600px;
+  }
   .cita p {
     font-weight: bold;
     margin-bottom: .8rem;
@@ -81,7 +103,28 @@ html {
     color: white;
     margin-top: 2rem;
   }
-  
+
+  .button.aceptar{
+    background-color: darkcyan;
+    color: white;
+    margin-top: 2rem;
+  }
+  .button.citas{
+    background-color: rgb(238, 245, 245);
+    color: rgb(202, 35, 127);
+    margin-top: 2rem;
+    width: 60%;
+    justify-items: center;
+    margin-left: 6cm ;
+  }
+  .button.sesion{
+    background-color: rgb(238, 245, 245);
+    color: rgb(202, 35, 127);
+    margin-top: 2rem;
+    width: 60%;
+    justify-items: center;
+    margin-left: 11cm ;
+  }
   .alerta-error {
     background-color: white;
     color: red;

@@ -15,7 +15,10 @@ export function initAxiosIntterceptos(){
  axios.interceptors.request.use(config=>{
      const token = getToken();
      if(token){
-         config.headers.Authorization = "bearer " + token
+         config.headers.authorization = token
+         return config;
+     } else{
+         return config;
      }
  })
 }

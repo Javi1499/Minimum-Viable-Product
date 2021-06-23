@@ -1,15 +1,19 @@
 import {React, Fragment, useState} from 'react';
 import axios from 'axios'
+
 const Formulario = ({setCitas, citas}) => {
 //Crear State Citas
 const [cita, setCita] = useState({
     mascota:'',
     usuario:'',
-    fecha:'',
+    fecha:new Date(),
     hora: '',
     sintomas:''
 });
-const [error, setError] = useState(false);
+const [error, setError] = useState({
+    error:false,
+    mensaje:""
+});
 
 //Funcion que se ejecuta cada que el usuaruioi modica un input
 const actualizarState = e =>{
@@ -28,7 +32,7 @@ const submitCita = async (e) =>{
    //validar
 if(mascota.trim()===''|| usuario.trim()===""|| fecha.trim()===""||
  hora.trim()===""|| sintomas.trim()===""){
-    setError(true)
+    setError({error:true, mensaje:"Todos los campos son obligatorios"});
     
     return
 }
@@ -37,7 +41,18 @@ setError(false);
 
    //Crear cita
    
-    await axios.post("http://localhost:4006/citas/nuevaCita", cita)
+   const res = await axios.post("https://mvp-system.herokuapp.com/citas/nuevaCita", cita);
+   if(res.data.status !=200){
+       setError({error:true, mensaje:"Ya hay una cita en ese horario y dia"})
+       setCita({
+        mascota:'',
+        usuario:'',
+        fecha:'',
+        hora: '',
+        sintomas:''
+       })
+       return;
+   }
     setCitas([...citas, cita])
    // Reiniciar el form
    setCita({
@@ -51,7 +66,7 @@ setError(false);
     return ( 
 <Fragment>
     <h2>Crear Cita</h2>
-{error ? <p className="alerta-error">Todos los campos son obligatorios</p> : null}
+{error.error ? <p className="alerta-error">{error.mensaje}</p> : null}
 
     <form
     onSubmit={submitCita}
@@ -65,7 +80,7 @@ setError(false);
         onChange={actualizarState}
         value={mascota}
         />
-        <label>Nombre del duenio</label>
+        <label>Nombre del dueño</label>
         <input 
         type="text"
         name="usuario"
@@ -90,7 +105,7 @@ setError(false);
         onChange={actualizarState}
         value={hora}
         />
-          <label>Sintomas</label>
+          <label>Síntomas</label>
        <textarea
        className="u-full-width"
        name="sintomas"
